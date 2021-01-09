@@ -199,11 +199,13 @@
             for (var i = 0; i < 8; i++) {
                 vertices.push(new THREE.Vector3(controlPoints[i].x, controlPoints[i].y, controlPoints[i].z));
             }
-
-            mesh.children.forEach(function (e) {
-                e.geometry.vertices = vertices;
-                e.geometry.verticesNeedUpdate = true;
-                e.geometry.computeFaceNormals();
+            /**
+             * 出于效率方面的考虑，three.js库假设一个网格的几何体在其生命周期内不会变。
+             */
+             mesh.children.forEach(function (e) {
+                e.geometry.vertices = vertices;//指向一个更新后的顶点数组
+                e.geometry.verticesNeedUpdate = true;//需要钙塑geometry对象，这些顶点需要更新
+                e.geometry.computeFaceNormals();//重新计算侧面，从而完成整个模型的更新
             });
 
             // render using requestAnimationFrame

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<!-- 场景 -->
 <html>
 
 <head>
@@ -68,6 +68,7 @@
         camera.lookAt(scene.position);
 
         // add subtle ambient lighting
+        // 环境光
         var ambientLight = new THREE.AmbientLight(0x0c0c0c);
         scene.add(ambientLight);
 
@@ -75,6 +76,7 @@
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
+        // 聚光灯光源
         scene.add(spotLight);
 
         // add the output of the renderer to the html element
@@ -86,7 +88,7 @@
         var controls = new function () {
             this.rotationSpeed = 0.02;
             this.numberOfObjects = scene.children.length;
-
+            // 把最后添加的方块从场景中移除
             this.removeCube = function () {
                 var allChildren = scene.children;
                 var lastObject = allChildren[allChildren.length - 1];
@@ -95,7 +97,7 @@
                     this.numberOfObjects = scene.children.length;
                 }
             };
-
+            // 随机在场景中添加一个方块
             this.addCube = function () {
 
                 var cubeSize = Math.ceil((Math.random() * 3));
@@ -135,7 +137,12 @@
             stats.update();
 
             // rotate the cubes around its axes
-            scene.traverse(function (e) {
+            /**
+             * 我们可以将一个函数传递给traverse()函数，这个传递过来的函数将会在场景的每一个子对象上调用一次。
+             * 在render()函数里，将使用traverse()函数更新每个方块的旋转弧度(特意忽略了地面的plane对象。)
+             * 当然也可以通过for循环遍历children这个属性数组来达到同样的目的。
+             */
+             scene.traverse(function (e) {
                 if (e instanceof THREE.Mesh && e != plane) {
 
                     e.rotation.x += controls.rotationSpeed;
